@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Coder Helper - Maintenance</title>
+<meta name="description" content="Coder Helper is under maintenance. Please wait while we fix the website.">
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Arial', sans-serif;
+    background: #0f172a;
+    color: #fff;
+    overflow: hidden;
+    text-align: center;
+  }
+
+  h1 {
+    font-size: 6rem;
+    margin-bottom: 20px;
+    animation: shake 1s infinite;
+  }
+
+  p {
+    font-size: 1.5rem;
+    margin-bottom: 40px;
+  }
+
+  /* Clock */
+  .clock {
+    width: 100px;
+    height: 100px;
+    border: 5px solid #fbbf24;
+    border-radius: 50%;
+    position: relative;
+    margin-bottom: 50px;
+  }
+  .hand {
+    position: absolute;
+    width: 4px;
+    height: 40px;
+    background: #fbbf24;
+    top: 10px;
+    left: 48px;
+    transform-origin: bottom;
+  }
+
+  /* Car */
+  .car {
+    width: 80px;
+    height: 40px;
+    background: #38bdf8;
+    border-radius: 8px;
+    position: absolute;
+    bottom: 20px;
+    left: -100px;
+    animation: drive 4s linear infinite;
+  }
+
+  /* Animations */
+  @keyframes drive {
+    0% { left: -100px; transform: rotate(0deg); }
+    50% { left: 50%; transform: rotate(20deg); }
+    60% { transform: rotate(-30deg); }
+    100% { left: 100%; transform: rotate(0deg); }
+  }
+
+  @keyframes shake {
+    0% { transform: rotate(0deg); }
+    25% { transform: rotate(5deg); }
+    50% { transform: rotate(-5deg); }
+    75% { transform: rotate(5deg); }
+    100% { transform: rotate(0deg); }
+  }
+
+</style>
+</head>
+<body>
+  <h1>😭</h1>
+  <p>Fixing the Coder Helper… it’s taking some time!</p>
+  
+  <div class="clock">
+    <div class="hand"></div>
+  </div>
+  
+  <div class="car"></div>
+
+  <p>🚗💥🕒 (Don’t worry, we’re working on it!)</p>
+</body>
+</html>
