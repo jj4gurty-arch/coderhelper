@@ -1,207 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Ultimate AI Game Dev Tutor</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-<style>
-*{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Inter',sans-serif;background:linear-gradient(145deg,#0f172a,#1e293b);color:#fff;padding:20px;min-height:100vh;}
-h1{text-align:center;font-size:3rem;font-weight:700;color:#38bdf8;text-shadow:2px 2px 6px rgba(0,0,0,0.5);margin-bottom:30px;}
-.container{display:flex;gap:20px;flex-wrap:wrap;justify-content:center;}
-.chat-box,.notepad{background:#1e293b;border-radius:25px;padding:30px;width:600px;max-height:700px;box-shadow:0 10px 25px rgba(0,0,0,0.6);display:flex;flex-direction:column;}
-#chat{max-height:450px;overflow-y:auto;margin-bottom:15px;padding-right:10px;}
-.message{margin:6px 0;line-height:1.6;word-wrap:break-word;}
-.user{color:#facc15;font-weight:600;}
-.ai{color:#38bdf8;font-weight:600;}
-textarea,select{width:100%;padding:14px;font-size:16px;border-radius:15px;border:none;margin-top:5px;outline:none;background:#0f172a;color:#fff;box-shadow: inset 0 2px 6px rgba(0,0,0,0.5);resize:none;}
-pre{background:#0f172a;padding:14px;border-radius:15px;overflow-x:auto;margin-top:10px;box-shadow: inset 0 3px 6px rgba(0,0,0,0.5);}
-h2{margin-bottom:12px;color:#fbbf24;text-shadow:1px 1px 3px rgba(0,0,0,0.3);}
-button{margin-top:10px;padding:12px;border:none;border-radius:15px;background:#38bdf8;color:#1e293b;font-weight:600;cursor:pointer;}
-button:hover{background:#0ea5e9;}
-</style>
+  <meta charset="UTF-8">
+  <title>Coder Helper - Maintenance</title>
+  <meta name="description" content="Coder Helper is under maintenance. Please wait while we fix the website.">
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: 'Arial', sans-serif;
+      background: #0f172a;
+      color: #fff;
+      text-align: center;
+    }
+    h1 {
+      font-size: 5rem;
+      margin-bottom: 20px;
+    }
+    p {
+      font-size: 1.5rem;
+    }
+  </style>
 </head>
 <body>
-<h1>🤖 Ultimate AI Game Dev Tutor</h1>
-<div class="container">
-  <div class="chat-box">
-    <h2>AI Chat</h2>
-    <select id="engine">
-      <option value="Roblox Studio">Roblox Studio</option>
-      <option value="Unity">Unity</option>
-      <option value="Godot">Godot</option>
-      <option value="Unreal Engine">Unreal Engine</option>
-      <option value="Python">Python</option>
-      <option value="JavaScript">JavaScript</option>
-      <option value="HTML Canvas">HTML Canvas</option>
-    </select>
-    <div id="chat"></div>
-    <textarea id="userInput" placeholder="Describe a game feature, e.g., 'Press F to fly for 10 seconds'" rows="3"></textarea>
-  </div>
-  <div class="notepad">
-    <h2>📝 Notepad</h2>
-    <textarea id="notepad" placeholder="Take notes here..." rows="25"></textarea>
-    <button onclick="saveNotes()">💾 Save Notes</button>
-  </div>
-</div>
-
-<script>
-let lastScript=null;
-let waitingUpgrade=false;
-let secretCounter=0;
-let easterEggs={konami:0,prezell:false,upupdowndown:0,iddqd:false};
-
-function addChatMessage(role,text){
-  const div=document.createElement("div");
-  div.className="message "+role;
-  div.textContent=(role==="user"?"You: ":"AI: ")+text;
-  document.getElementById("chat").appendChild(div);
-  document.getElementById("chat").scrollTop=document.getElementById("chat").scrollHeight;
-}
-
-function sendMessage(userText){
-  if(!userText) return;
-  addChatMessage("user",userText);
-
-  const lower=userText.toLowerCase();
-
-  // Easter eggs
-  if(lower.includes("konami")){ easterEggs.konami++; if(easterEggs.konami===5) addChatMessage("ai","🎉 Konami Secret Activated! Check notepad for hidden tips."),document.getElementById("notepad").value+="\n// SECRET TIP: Always comment your code";}
-  if(lower.includes("prezell")&&!easterEggs.prezell){ easterEggs.prezell=true; addChatMessage("ai","🎮 Mini Fortnite unlocked! Check notepad to copy/paste."); document.getElementById("notepad").value+=`\n<!-- MINI FORTNITE HTML GAME -->\n<html><body><div id="player"></div></body></html>`;}
-  if(lower.includes("upupdowndown")){ easterEggs.upupdowndown++; if(easterEggs.upupdowndown===2) addChatMessage("ai","🎁 Easter Egg! Secret bonus unlocked.") }
-  if(lower.includes("iddqd")){ easterEggs.iddqd=true; addChatMessage("ai","💡 God Mode activated!") }
-
-  if(waitingUpgrade){ handleUpgradeResponse(userText); return; }
-
-  const engine=document.getElementById("engine").value;
-  const response=generateScript(userText,engine);
-  lastScript=response;
-
-  addChatMessage("ai",response.text);
-  if(response.code){
-    const codeBlock=document.createElement("pre");
-    codeBlock.textContent=response.code.replace(/\n{2,}/g,"\n");
-    document.getElementById("chat").appendChild(codeBlock);
-  }
-  if(response.steps){
-    const stepBlock=document.createElement("pre");
-    stepBlock.textContent="Step-by-Step Guide:\n"+response.steps.map((s,i)=>`${i+1}. ${s}`).join("\n");
-    document.getElementById("chat").appendChild(stepBlock);
-  }
-
-  setTimeout(()=>askUpgrade(),200);
-}
-
-function askUpgrade(){
-  if(!lastScript) return;
-  waitingUpgrade=true;
-  addChatMessage("ai","🌟 Want me to upgrade this script with better features/performance? (yes/no)");
-}
-
-function handleUpgradeResponse(text){
-  waitingUpgrade=false;
-  const yes=["yes","y","yeah","yea","yess","yessss","sure"];
-  const no=["no","nah","nope","not now"];
-  const lower=text.toLowerCase();
-  if(yes.some(w=>lower.includes(w))){
-    const upgraded=upgradeScript(lastScript);
-    addChatMessage("ai","✅ Upgraded script:");
-    if(upgraded.code){
-      const codeBlock=document.createElement("pre");
-      codeBlock.textContent=upgraded.code.replace(/\n{2,}/g,"\n");
-      document.getElementById("chat").appendChild(codeBlock);
-    }
-    if(upgraded.steps){
-      const stepBlock=document.createElement("pre");
-      stepBlock.textContent="Upgraded Steps:\n"+upgraded.steps.map((s,i)=>`${i+1}. ${s}`).join("\n");
-      document.getElementById("chat").appendChild(stepBlock);
-    }
-    lastScript=upgraded;
-  } else if(no.some(w=>lower.includes(w))){
-    addChatMessage("ai","👌 No worries! Ask me to upgrade anytime.");
-  } else {
-    addChatMessage("ai","🤔 I didn't understand. Please answer yes or no.");
-    waitingUpgrade=true;
-  }
-}
-
-function generateScript(text,engine){
-  text=text.toLowerCase();
-  let code="",steps=[],explanation="",location="";
-  if(/fly/.test(text)&&/press/.test(text)){
-    code=getFly(engine);
-    location=getLocation(engine,"fly");
-    steps=[`Place the script here: ${location}`,"Press key to fly for 10 seconds"];
-    explanation="Fly script ready!";
-  } else if(/shoot|projectile|fireball/.test(text)){
-    code=getShoot(engine);
-    location=getLocation(engine,"shoot");
-    steps=[`Place the script here: ${location}`,"Press click or key to shoot"];
-    explanation="Projectile shooting script ready!";
-  } else if(/gui|score|leaderboard/.test(text)){
-    code=getGUI(engine);
-    location=getLocation(engine,"gui");
-    steps=[`Place the script here: ${location}`,"Connect GUI or events"];
-    explanation="GUI / Score script ready!";
-  } else if(/teleport/.test(text)){
-    code=getTeleport(engine);
-    location=getLocation(engine,"teleport");
-    steps=[`Place the script here: ${location}`,"Press key to teleport"];
-    explanation="Teleport script ready!";
-  } else {
-    code="// Describe your action clearly, e.g., 'Press F to fly'";
-    steps=["Describe feature clearly","Select engine above"];
-    explanation="I'm here to guide you step by step!";
-  }
-  return {text:explanation,code:code,steps:steps};
-}
-
-function getLocation(engine,feature){
-  const locs={
-    "Roblox Studio":{fly:"LocalScript → StarterPlayerScripts",shoot:"LocalScript inside Tool → StarterPack",gui:"ScreenGui → StarterGui",teleport:"LocalScript → StarterPlayerScripts"},
-    "Unity":{fly:"C# script attached to Player GameObject",shoot:"C# script attached to Player or Weapon prefab",gui:"UI Canvas attached to Player or Scene",teleport:"C# script attached to Player GameObject"},
-    "Godot":{fly:"Attach GDScript to Player Node",shoot:"Attach script to Player or Weapon Node",gui:"Control Node or CanvasLayer",teleport:"Attach script to Player Node"},
-    "Unreal Engine":{fly:"Actor Blueprint or C++ Player class",shoot:"Actor Blueprint or C++ Weapon class",gui:"Widget Blueprint",teleport:"Player Blueprint or Character class"},
-    "JavaScript":{fly:"<script> tag or JS file",shoot:"<script> tag or JS file",gui:"HTML div or Canvas overlay",teleport:"<script> tag or JS file"},
-    "HTML Canvas":{fly:"<script> tag or JS file",shoot:"<script> tag or JS file",gui:"Canvas overlay or JS file",teleport:"<script> tag or JS file"},
-    "Python":{fly:"Player class or main script",shoot:"Player class or module",gui:"GUI window (Tkinter/Pygame)",teleport:"Player class or main script"}
-  };
-  return locs[engine][feature];
-}
-
-function getFly(engine){
-  switch(engine){
-    case "Roblox Studio": return `-- Roblox Fly\nlocal player=game.Players.LocalPlayer\nlocal uis=game:GetService("UserInputService")\nuis.InputBegan:Connect(function(input)\n  if input.KeyCode==Enum.KeyCode.F then\n    local humanoid=player.Character:FindFirstChild("Humanoid")\n    humanoid.PlatformStand=true\n    humanoid.RootPart.Velocity=Vector3.new(0,50,0)\n    wait(10)\n    humanoid.PlatformStand=false\n  end\nend)`;
-    case "Unity": return `using UnityEngine;\npublic class FlyOnF : MonoBehaviour{\npublic float flyForce=50f;\nprivate bool isFlying=false;\nvoid Update(){if(Input.GetKeyDown(KeyCode.F)&&!isFlying) StartCoroutine(Fly());}\nSystem.Collections.IEnumerator Fly(){isFlying=true;Rigidbody rb=GetComponent<Rigidbody>();rb.velocity=Vector3.up*flyForce;yield return new WaitForSeconds(10f);rb.velocity=Vector3.zero;isFlying=false;}}`;
-    case "JavaScript": case "HTML Canvas": return `document.addEventListener('keydown',e=>{if(e.key==='f'){console.log('Player flies for 10 seconds');setTimeout(()=>console.log('Flight ended'),10000);}});`;
-    case "Python": return `class Player:\n    def fly(self):\n        print("Player flies for 10 seconds")`;
-    default: return "// Fly script placeholder";
-  }
-}
-
-function getShoot(engine){ return "// Shooting script placeholder"; }
-function getGUI(engine){ return "// GUI / Score script placeholder"; }
-function getTeleport(engine){ return "// Teleport script placeholder"; }
-
-function upgradeScript(script){
-  let upgradedCode=script.code.replace(/wait\((\d+)\)/g,"wait(5)");
-  let upgradedSteps=script.steps.slice(); upgradedSteps.push("✨ Optimized timing and added enhancements.");
-  return {text:script.text+" (Upgraded!)",code:upgradedCode,steps:upgradedSteps};
-}
-
-function saveNotes(){
-  const content=document.getElementById("notepad").value;
-  const blob=new Blob([content],{type:"text/plain"});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement("a");
-  a.href=url;
-  a.download="notes.txt";
-  a.click();
-  URL.revokeObjectURL(url);
-  alert("Notes saved!");
-}
-
-document.getElementById("userInput").addEventListener("keydown",function(e){
-  if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendMessage(this.value);this.value="";}
-});
-</script>
+  <h1>😢</h1>
+  <p>Fixing the Coder Helper… Please wait a little while, I’m working on it!</p>
+</body>
+</html>
